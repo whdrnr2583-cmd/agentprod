@@ -1,0 +1,44 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "agentprod"
+version = "0.0.1"
+description = "Production patterns for indie AI agents — token bucket, cost-aware routing, retry, observability."
+readme = "README.md"
+license = { text = "MIT" }
+requires-python = ">=3.10"
+keywords = ["ai", "agent", "llm", "production", "rate-limit", "retry", "cost", "langgraph", "claude"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+dependencies = []
+
+[project.optional-dependencies]
+retry = ["tenacity>=8.0"]
+test = ["pytest>=7.0", "pytest-asyncio>=0.21"]
+dev = ["agentprod[retry,test]", "ruff>=0.1"]
+
+[project.urls]
+Homepage = "https://github.com/whdrnr2583-cmd/agentprod"
+Issues = "https://github.com/whdrnr2583-cmd/agentprod/issues"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/agentprod"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
