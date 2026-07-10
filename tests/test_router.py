@@ -45,6 +45,23 @@ class TestClassifyComplexity:
         )
         assert result == Complexity.MODERATE
 
+    def test_word_count_boundary_thresholds(self):
+        """Synthetic fixture: the decision order is documented as strict '>'
+        comparisons (docstring steps 4-5), so exact-threshold word counts
+        should NOT bump to the next tier. Previously only interior word
+        counts (8<wc<25, wc>25) were exercised; the exact boundaries
+        (wc==8, wc==25, wc==26) were untested.
+        """
+        # No keyword hits, so classification falls through purely on word count.
+        wc_at_moderate_threshold = " ".join(["word"] * 8)
+        assert classify_complexity(wc_at_moderate_threshold) == Complexity.SIMPLE
+
+        wc_at_complex_threshold = " ".join(["word"] * 25)
+        assert classify_complexity(wc_at_complex_threshold) == Complexity.MODERATE
+
+        wc_one_over_complex_threshold = " ".join(["word"] * 26)
+        assert classify_complexity(wc_one_over_complex_threshold) == Complexity.COMPLEX
+
 
 class TestRouter:
     def _three_tier(self) -> Router:

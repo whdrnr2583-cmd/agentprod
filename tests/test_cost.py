@@ -140,3 +140,26 @@ class TestCostTracker:
         assert len(t.entries()) == 1
         t.reset()
         assert len(t.entries()) == 0
+
+    def test_unwritable_jsonl_directory_degrades_gracefully(self, tmp_path):
+        """Synthetic fixture: point jsonl_path's parent at a location that is
+        actually a file, not a directory. Both the constructor's mkdir()
+        and _append_jsonl()'s open() then hit OSError. Per the class
+        docstring ("Append failures are logged at debug level and never
+        raise"), record() must still succeed and in-memory tracking must
+        stay intact — this was previously untested (both except-OSError
+        branches were uncovered).
+        """
+        blocker = tmp_path / "not_a_dir"
+        blocker.write_text("occupies the path a directory would need")
+        jsonl_path = blocker / "cost.jsonl"
+
+        t = CostTracker(jsonl_path=jsonl_path)  # must not raise
+        entry = t.record(
+            model="m", input_tokens=100, output_tokens=50,
+            pricing=self._pricing(),
+        )  # must not raise
+        assert entry.cost_usd > 0
+        assert len(t.entries()) == 1
+        assert t.total_usd() == pytest.approx(entry.cost_usd)
+        assert not jsonl_path.exists()

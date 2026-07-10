@@ -99,7 +99,7 @@ router = Router(
 router.select("what is the price of AAPL?")
 # → "gpt-4o-mini"
 
-router.select("compare AAPL and MSFT cash flow over 5 years")
+router.select("compare AAPL and MSFT, then forecast which one outperforms")
 # → "claude-sonnet-4-6"
 ```
 
@@ -177,11 +177,14 @@ tracker.record(
     pricing=pricing,
     labels={"agent": "fundamental_analyst", "user": "u_123", "route": "/analyze"},
 )
+# → this single call costs $0.007755
 
-tracker.total_usd()                       # 12.4583
+# Numbers below are illustrative for a running system with many calls, not
+# the output of the single record() call above:
+tracker.total_usd()                         # 12.4583
 tracker.total_usd(where={"user": "u_123"})  # 0.42
-tracker.by_label("agent")                  # {"fundamental_analyst": 0.42, ...}
-tracker.by_model()                         # {"gpt-4o": 12.4583}
+tracker.by_label("agent")                   # {"fundamental_analyst": 0.42, ...}
+tracker.by_model()                          # {"gpt-4o": 12.4583}
 ```
 
 Why bring your own pricing: model prices change weekly. A library that ships its own catalog goes stale fast.

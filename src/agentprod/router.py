@@ -17,7 +17,7 @@ Typical wiring with three-tier model setup:
     ... })
     >>> router.select("what is the price of AAPL")
     'gpt-4o-mini'
-    >>> router.select("compare AAPL and MSFT cash flow over 5 years")
+    >>> router.select("compare AAPL and MSFT, then forecast which one outperforms")
     'claude-sonnet-4-6'
 
 You can also extend complexity / simple keyword sets per domain:
